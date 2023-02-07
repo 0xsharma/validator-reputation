@@ -15,12 +15,8 @@ var web3 = new Web3(Web3.givenProvider || HTTPSWEB3);
 web3.extend({
     property: 'bor',
     methods: [{
-        name: 'getAuthor',
-        call: 'bor_getAuthor',
-        params: 1
-    },{
-        name: 'getSnapshotProposer',
-        call: 'bor_getSnapshotProposer',
+        name: 'getSnapshotProposerSequence',
+        call: 'bor_getSnapshotProposerSequence',
         params: 1
     },]
 })
@@ -30,16 +26,12 @@ const timer = ms => new Promise(res => setTimeout(res, ms))
 var PrimaryValidators = new Map(); // validator that is the primary validator for a given block
 var BlockProducers = new Map();  // validator that is the block producer for a given block 
 
-async function getMiner(blockNum) {
+async function getSnapshotDetails(blockNum) {
     var hexBlockNum = '0x' + blockNum.toString(16)
-    let miner = await web3.bor.getAuthor(hexBlockNum)
-    return miner
-}
-
-async function getPrimaryValidator(blockNum) {
-    var hexBlockNum = '0x' + blockNum.toString(16)
-    let primary = await web3.bor.getSnapshotProposer(hexBlockNum)
-    return primary
+    let response = await web3.bor.getSnapshotProposerSequence(hexBlockNum)
+    let proposer = response.data.result.Signers[0].Signer
+    let miner = response.data.result.Author
+    return [proposer, miner]
 }
 
 async function main(){
@@ -49,8 +41,7 @@ async function main(){
 
             console.log("scanning block...   ", i)
 
-            var proposer = await getPrimaryValidator(i)
-            var miner = await getMiner(i)
+            var [proposer,miner] = await getSnapshotDetails(i)
     
             PrimaryValidators.set(i, proposer)
             BlockProducers.set(i, miner)
