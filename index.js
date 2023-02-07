@@ -29,8 +29,8 @@ var BlockProducers = new Map();  // validator that is the block producer for a g
 async function getSnapshotDetails(blockNum) {
     var hexBlockNum = '0x' + blockNum.toString(16)
     let response = await web3.bor.getSnapshotProposerSequence(hexBlockNum)
-    let proposer = response.data.result.Signers[0].Signer
-    let miner = response.data.result.Author
+    let proposer = response.Signers[0].Signer
+    let miner = response.Author
     return [proposer, miner]
 }
 
