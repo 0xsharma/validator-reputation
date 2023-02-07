@@ -34,10 +34,8 @@ async function getPrimaryValidator(blockNum){
         'Content-Type': 'application/json',
         },
     }).then((response) => {
-        console.log("response: ", response)
         proposer = response.data.result
     })
-    console.log("proposer: ", proposer)
     return proposer
 }
 
@@ -54,7 +52,7 @@ async function getMiner(blockNum) {
 
 async function main(){
     
-    for(var i=startBlockNum; i<=lastBlockNum; i=i+64){
+    for(var i=startBlockNum; i<=lastBlockNum; i=i+1){
         try{
 
             console.log("scanning block...   ", i)
