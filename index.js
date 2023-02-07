@@ -18,26 +18,12 @@ web3.extend({
         name: 'getAuthor',
         call: 'bor_getAuthor',
         params: 1
-    }]
+    },{
+        name: 'getSnapshotProposer',
+        call: 'bor_getSnapshotProposer',
+        params: 1
+    },]
 })
-
-async function getPrimaryValidator(blockNum){
-    var proposer
-    var hexBlockNum = '0x' + blockNum.toString(16)
-    await axios.post(HTTPSWEB3 ,{
-        jsonrpc: '2.0',
-        method: 'bor_getSnapshotProposer',
-        params: [hexBlockNum],
-        id: 1
-    }, {
-        headers: {
-        'Content-Type': 'application/json',
-        },
-    }).then((response) => {
-        proposer = response.data.result
-    })
-    return proposer
-}
 
 const timer = ms => new Promise(res => setTimeout(res, ms))
 
@@ -48,6 +34,12 @@ async function getMiner(blockNum) {
     var hexBlockNum = '0x' + blockNum.toString(16)
     let miner = await web3.bor.getAuthor(hexBlockNum)
     return miner
+}
+
+async function getPrimaryValidator(blockNum) {
+    var hexBlockNum = '0x' + blockNum.toString(16)
+    let primary = await web3.bor.getSnapshotProposer(hexBlockNum)
+    return primary
 }
 
 async function main(){
